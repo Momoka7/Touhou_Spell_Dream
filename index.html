@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="JS/pixi.min.js"></script>
+    <script>
+        let app;
+        let img;
+        let keys={};
+        let bullets=[];
+        let shootDir=0;
+        let gameStage;
+        let gameCanves;
+        window.onload = function(){
+            app=new PIXI.Application(
+                {
+                    width:800,
+                    height:600,
+                    backgroundColor:0x66CCFF
+                }
+            )
+            gameStage=document.querySelector("#gameStage");
+            gameStage.appendChild(app.view);
+            //gameCanves=gameStage.childNodes[0];
+            gameCanves=app.view;//也可通过app.view来获取PIXI所创建的Canvas Dom元素
+            img=new PIXI.Sprite.from("asserts/images/1.png");
+
+            img.anchor.set(0.5);
+            app.stage.addChild(img);
+            //使PIXI的stage可交互
+            app.stage.interactive=true;
+            //开启交互后才能和用户交互的事件
+            /*app.stage.on("pointermove",e=>{
+                let pos=e.data.global;
+                img.x=pos.x;
+                img.y=pos.y;
+            });*/
+            app.stage.on("pointerdown",shoot)
+            
+            window.addEventListener("keydown",keysDown);
+            window.addEventListener("keyup",keysUp);
+            app.ticker.add(keysListener);
+            app.ticker.add(bulletMovement);
+        }
+        function bulletMovement(delta){
+            for(let i=0;i<bullets.length;i++){
+                switch(bullets[i].dir){
+                    case 0:
+                        bullets[i].y-=5;
+                        break;
+                    case 1:
+                        bullets[i].y+=5;
+                        break;
+                    case 2:
+                        bullets[i].x-=5;
+                        break;
+                    case 3:
+                        bullets[i].x+=5;
+                        break;
+                }
+            }
+
+            for(let i=0;i<bullets.length;i++){
+                if(!isInRange(bullets[i])){//不在画布范围内
+                    app.stage.removeChild(bullets[i]);
+                    bullets.splice(i,1);
+                }
+            }
+        }
+
+        function shoot(e){//发射子弹
+            let b=createBullet();
+            console.log(bullets);
+            bullets.push(b);
+        }
+        //创建子弹
+        function createBullet(){
+            let b=new PIXI.Sprite.from("asserts/images/2.png");
+            b.anchor.set(0.5);//创建在img中心
+            b.x=img.x;
+            b.y=img.y;
+            b.height=20;
+            b.width=20;
+            b.dir=shootDir;
+            app.stage.addChild(b);
+            return b;
+        }
+
+        function isInRange(item){//判断子弹是否已超过可使范围，可将其移除，进行优化
+            let width=gameCanves.width;
+            let height=gameCanves.height;
+            if(item.x>=0&&item.x<=width&&item.y>=0&&item.y<=height){
+                return true;
+            }
+            return false;
+        }
+
+        //键盘按下事件
+        function keysDown(e){
+            keys[e.key]=true;
+            //console.log(JSON.stringify(keys));
+        }
+        //键盘松开事件
+        function keysUp(e){ 
+            keys[e.key]=false;
+        }
+        //监听键盘事件
+        function keysListener(){
+            if(keys['w']){
+                img.y-=5;
+                shootDir=0;
+            }
+            if(keys['s']){
+                img.y+=5;
+                shootDir=1;
+            }
+            if(keys['a']){
+                img.x-=5;
+                shootDir=2;
+            }
+            if(keys['d']){
+                img.x+=5;
+                shootDir=3;
+            }
+            if(keys['j']){
+                shoot();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="gameStage"></div>
+</body>
+</html>

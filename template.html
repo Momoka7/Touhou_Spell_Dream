@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='JS/pixi.min.js'></script>
+    <script>
+        let app;
+        window.onload=function(){
+            app=new PIXI.Application(
+                {
+                    width:640,
+                    height:480,
+                    backgroundColor:0x66CCFF
+                }
+            )
+            app.ticker.add(gameloop);//添加游戏循环
+            app.ticker.add(keysListener);
+            window.addEventListener("keydown", keysDown);
+            window.addEventListener("keyup", keysUp);
+            document.querySelector("#pixiDiv").appendChild(app.view);//加入画布到dom中
+        }
+        
+        function gameloop(delta){
+
+        }
+
+        //键盘按下事件
+        function keysDown(e) {
+            keys[e.key] = true;
+        }
+        //键盘松开事件
+        function keysUp(e) {
+            keys[e.key] = false;
+        }
+
+        function keysListener() {
+            if (keys['w']) {
+
+            }
+            if (keys['s']) {
+
+            }
+            if (keys['a']) {
+
+            }
+            if (keys['d']) {
+
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="pixiDiv"></div>
+</body>
+</html>

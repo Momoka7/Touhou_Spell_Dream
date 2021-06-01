@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='JS/pixi.min.js'></script>
+    <script src="minified/gsap.min.js"></script>
+    <script src="minified/PixiPlugin.min.js"></script>
+    <script src="minified/CSSRulePlugin.min.js"></script>
+    <script src="minified/CustomEase.min.js"></script>
+    <script>
+        let app;
+        let barrage=[];
+        let testContainers=[];
+        let timeline;
+        window.onload=function(){
+            app=new PIXI.Application(
+                {
+                    width:800,
+                    height:600,
+                    antialias: true,
+                    backgroundColor:0x000000
+                }
+            )
+            
+            gsap.registerPlugin(PixiPlugin);
+            gsap.registerPlugin(CustomEase);
+            timeline=gsap.timeline();
+
+            app.ticker.add(gameloop);//添加游戏循环
+            
+            document.querySelector("#pixiDiv").appendChild(app.view);//加入画布到dom中
+            createBarr(10,5);
+        }
+        /**
+            params:容器的参数
+                x,y,angle等
+        */
+        function createBarrContioner(params){//创建每一簇的弹幕容器
+            let testContainer=new PIXI.Container();
+            testContainer.x=app.view.width/2;
+            testContainer.y=app.view.height/6;
+            testContainer.angle=params.angle;//角度
+            app.stage.addChild(testContainer);
+            testContainers.push(testContainer);
+        }
+
+        function createBarr(num,cluster){//创建弹幕
+            for(let j=0;j<cluster;j++){//创建cluster串弹幕
+                createBarrContioner({
+                    angle:j*10
+                });
+                for(let i=0;i<num;i++){//对于每一cluster，创建num个弹幕
+                    let b = new PIXI.Graphics();
+                    b.beginFill(0x664561);//绘制的颜色
+                    b.drawCircle(0, 0, 10);
+                    b.endFill();//用i*指定绘制的颜色填充
+                    //b.setTransform(100,300);
+                    barrage.push(b);
+                    testContainers[j].addChild(b);
+                }
+            }
+            /*timeline.to(barrage, {
+                //repeat:-1,
+                duration: 2, 
+                //yoyo:true,
+                //delay:1,
+                ease: "none",
+                y:200
+                }).to(barrage, {
+                    //repeat:-1,
+                    duration: 1, 
+                    ease: "none",
+                    y:400
+                    })*/
+            gsap.to(barrage, {
+                repeat:-1,
+                delay:1,
+                stagger:0.2,
+                duration: (index)=>{
+                    return -(index%num)*0.2+3
+                }, 
+                ease: "none",
+                //y:600,
+                pixi:{
+                    angle:20,
+                    pivotY:-600,
+                    pivotX:-300
+                }
+                });
+            
+        }
+        function gameloop(delta){
+        }
+    </script>
+</head>
+<body>
+    <div id="pixiDiv"></div>
+</body>
+</html>

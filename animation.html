@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='JS/pixi.min.js'></script>
+    <script>
+        let app;
+        let rKotori;
+        let kotoriSheets = {};
+        let loader;
+        let player;
+        let keys = {};
+        let isWalking = false;
+        let lockKey;
+        window.onload = function () {
+            app = new PIXI.Application(
+                {
+                    width: 800,
+                    height: 600,
+                    backgroundColor: 0x66CCFF
+                }
+            )
+            loader = PIXI.Loader.shared;
+            loader.add("kotori", "asserts/tilesets/kotori.png").load(setup);
+            document.querySelector("#pixiDiv").appendChild(app.view);//加入画布到dom中
+            window.addEventListener("keydown", keysDown);
+            window.addEventListener("keyup", keysUp);
+            app.ticker.add(keysListener);
+        }
+
+        function setup() {//加载纹理图片后的回调
+            rKotori = loader.resources["kotori"];
+            createSheet();
+            createPlayer();
+            app.ticker.add(gameloop);//添加游戏循环
+        }
+
+        function gameloop() {
+            if (!isWalking) {
+                player.stop();
+            }
+        }
+
+        function createPlayer() {//创建角色
+            player = new PIXI.AnimatedSprite(kotoriSheets.walkSouth);
+            
+            player.anchor.set(0.5);//设置锚点
+            player.loop = true;//不循环
+            player.animationSpeed = 0.1;
+            player.x = app.view.width / 2;
+            player.y = app.view.height / 2;
+            player.speed = 2;
+            app.stage.addChild(player);
+            player.play();
+        }
+
+        function createSheet() {
+            let sheet = new PIXI.BaseTexture.from(rKotori.url);
+            let h = 48;//人物的长宽
+            let w = 32;
+            //人物站立的四个方向
+            kotoriSheets["standNorth"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0 * h, w, h))
+            ];
+            kotoriSheets["standWest"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 1 * h, w, h))
+            ];
+            kotoriSheets["standEast"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 2 * h, w, h))
+            ];
+            kotoriSheets["standSouth"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 3 * h - 1, w, h))
+            ];
+            //人物行走的四个方向
+            kotoriSheets["walkSouth"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(2 * w, 0 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(3 * w - 1, 0 * h, w, h))
+            ];
+            kotoriSheets["walkWest"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 1 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 1 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(2 * w, 1 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(3 * w - 1, 1 * h, w, h))
+            ];
+            kotoriSheets["walkEast"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 2 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 2 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(2 * w, 2 * h, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(3 * w - 1, 2 * h, w, h))
+            ];
+            kotoriSheets["walkNorth"] = [
+                new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 3 * h - 1, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 3 * h - 1, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(2 * w, 3 * h - 1, w, h)),
+                new PIXI.Texture(sheet, new PIXI.Rectangle(3 * w - 1, 3 * h - 1, w, h))
+            ];
+        }
+
+        //键盘按下事件
+        function keysDown(e) {
+            keys[e.key] = true;
+            console.log(player.x+"----"+player.y);
+            //console.log(JSON.stringify(keys));
+        }
+        //键盘松开事件
+        function keysUp(e) {
+            keys[e.key] = false;
+            isWalking = false;//不在行走
+            lockKey='';
+        }
+        //监听键盘事件
+        function keysListener() {
+            if (keys['w']&&(lockKey=='w'||lockKey=='')) {
+                if (!isWalking) {//已在行走
+                    player.textures = kotoriSheets.walkNorth;
+                    player.gotoAndPlay(1);
+                    isWalking = true;
+                }
+                player.y -= player.speed;
+                lockKey='w';
+            }
+            if (keys['s']&&(lockKey=='s'||lockKey=='')) {
+                if (!isWalking) {//已在行走
+                    player.textures = kotoriSheets.walkSouth;
+                    player.gotoAndPlay(1);
+                    isWalking = true;
+                }
+                player.y += player.speed;
+                lockKey='s';
+            }
+            if (keys['a']&&(lockKey=='a'||lockKey=='')) {
+                if (!isWalking) {//已在行走
+                    player.textures = kotoriSheets.walkWest;
+                    player.gotoAndPlay(1);
+                    isWalking = true;
+                }
+                player.x -= player.speed;
+                lockKey='a';
+            }
+            if (keys['d']&&(lockKey=='d'||lockKey=='')) {
+                if (!isWalking) {//已在行走
+                    player.textures = kotoriSheets.walkEast;
+                    player.gotoAndPlay(1);
+                    isWalking = true;
+                }
+                player.x += player.speed;
+                lockKey='d';
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="pixiDiv"></div>
+</body>
+
+</html>

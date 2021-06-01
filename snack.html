@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='JS/pixi.min.js'></script>
+    <script>
+        let app;
+        let keys = {};
+        let sg = [];
+        let sgShapes = [];
+        let f={};
+        let fShape;
+        let delay = 30;
+        let tail=1;
+        let score=0;
+        let UP=1;
+        let LEFT=2;
+        let DOWN=3;
+        let RIGHT=4;
+
+        window.onload=function(){
+            app=new PIXI.Application(
+                {
+                    width:640,
+                    height:480,
+                    antialias: true,
+                    backgroundColor:0x66CCFF
+                }
+            )
+            app.ticker.add(gameloop);//添加游戏循环
+            app.ticker.add(keysListener);
+            window.addEventListener("keydown", keysDown);
+            window.addEventListener("keyup", keysUp);
+            document.querySelector("#pixiDiv").appendChild(app.view);//加入画布到dom中
+
+            initSnack();
+            randomFood();
+        }
+        
+        function gameloop(delta){
+            if(delay--==0){
+                delay=30;
+                snackRunning();
+                drawSnack();
+                if(collisionDetect()){
+                    //处理碰撞到后的逻辑
+                    console.log("碰到了！");
+                }
+                if(eat()){
+                    //处理吃到食物后的逻辑
+                }
+                updateDir();
+            }
+        }
+
+        /*贪吃蛇逻辑代码*/
+        function drawBorder(){//绘制游戏边框
+
+        }
+
+        function drawSnack(){//绘制蛇
+            
+            sgShapes.splice(0,tail);
+            for(let i=0;i<tail;i++){
+                let b = new PIXI.Graphics();
+                if(i==0)b.beginFill(0x229961);
+                else b.beginFill(0x664561);//绘制的颜色
+                b.drawRect(0, 0, 10,10);
+                b.endFill();//用i*指定绘制的颜色填充
+                sgShapes.push(b);
+                app.stage.addChild(b);
+                b.setTransform(sg[i].posX*10, sg[i].posY*10);
+                //console.log(b.x);
+            }
+        }
+
+        function randomFood(){//随机生成食物
+            f.posX=Math.floor(Math.random()*64);
+            f.posY=Math.floor(Math.random()*48);
+            let b = new PIXI.Graphics();
+            b.beginFill(0x2299ff);//绘制的颜色
+            b.drawRect(0, 0, 10,10);
+            b.endFill();//用i*指定绘制的颜色填充
+            fShape=b;
+            app.stage.addChild(b);
+            b.setTransform(f.posX*10, f.posY*10);
+        }
+        
+
+        function eat(){//蛇吃东西
+            if(sg[0].posX==f.posX && sg[0].posY==f.posY){
+                randomFood();//吃完后随机生成食物
+                //增加蛇长度
+                sg[tail]={};
+                switch (sg[tail-1].dir)
+                {
+                case UP:
+                    sg[tail].posX=sg[tail-1].posX;
+                    sg[tail].posY=sg[tail-1].posY+1;
+                    break;
+                case LEFT:
+                    sg[tail].posX=sg[tail-1].posX+1;
+                    sg[tail].posY=sg[tail-1].posY;
+                    break;
+                case DOWN:
+                    sg[tail].posX=sg[tail-1].posX;
+                    sg[tail].posY=sg[tail-1].posY-1;
+                    break;
+                case RIGHT:
+                    sg[tail].posX=sg[tail-1].posX-1;
+                    sg[tail].posY=sg[tail-1].posY;
+                    break;
+                default:
+                    break;
+                }
+                tail++;
+                //score++;
+                return 1; 
+            }
+            return 0;
+        }
+
+
+        function collisionDetect(){//碰撞检测
+            let i,j;
+            if(sg[0].posX<=0||sg[0].posY<=0||sg[0].posX>=63||sg[0].posY>=47){
+                return 1;
+            }else{
+                for(i=1;i<tail;i++){//碰撞身体
+                    if(sg[0].posX==sg[i].posX && sg[0].posY==sg[i].posY){
+                        return 1;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        function initSnack(){//初始化蛇
+            let sg0={},sg1={},sg2={},sg3={},sg4={};
+            sg0.posX=32;
+            sg0.posY=22;
+            sg0.dir=1;
+            sg1.posX=32;
+            sg1.posY=23;
+            sg1.dir=1;
+            sg2.posX=32;
+            sg2.posY=24;
+            sg2.dir=1;
+            sg3.posX=32;
+            sg3.posY=25;
+            sg3.dir=1;
+            sg4.posX=32;
+            sg4.posY=26;
+            sg4.dir=1;
+            sg[0]=sg0;
+            sg[1]=sg1;
+            sg[2]=sg2;
+            sg[3]=sg3;
+            sg[4]=sg4;
+            tail=5;
+        }
+
+        function updateDir(){//更新方向
+            let pre;
+            pre=sg[0].dir;
+            for(let i=1;i<tail;i++){//先移动，再改dir
+                let tem=sg[i].dir;
+                sg[i].dir=pre;
+                pre=tem;
+            }
+        }
+
+        function snackRunning(){//蛇运动
+            //let i;
+            for(let i=0;i<tail;i++){//先清空原始的图像
+                app.stage.removeChild(sgShapes[i]);
+            }
+            for(let i=0;i<tail;i++){//先移动，再改dir
+                switch (sg[i].dir)
+                {
+                case UP:
+                    sg[i].posY--;
+                    break;
+                case LEFT:
+                    sg[i].posX--;
+                    break;
+                case DOWN:
+                    sg[i].posY++;
+                    break;
+                case RIGHT:
+                    sg[i].posX++;
+                    break;
+                default:
+                    break;
+                }
+                if(i!=0){
+                    //sg[i].dir=sg[i].nextDir;
+                    //sg[i].nextDir=sg[i-1].dir;
+                    //sg[i]
+                }
+            }
+        }
+
+        function changeDir(dir){//改变头部方向
+            sg[0].dir=dir;
+        }
+
+        function snackUp(){//蛇往上走
+            sg[0].dir=UP;
+        }
+
+        function snackLeft(){//蛇往左走
+            sg[0].dir=LEFT;
+        }
+
+        function snackDown(){//蛇往下走
+            sg[0].dir=DOWN;
+        }
+
+        function snackRight(){//蛇往右走
+            sg[0].dir=RIGHT;
+        }
+        /*END***********/
+
+
+
+
+        //键盘按下事件
+        function keysDown(e) {
+            keys[e.key] = true;
+        }
+        //键盘松开事件
+        function keysUp(e) {
+            keys[e.key] = false;
+        }
+
+        function keysListener() {
+            if (keys['w']) {
+                snackUp();
+            }
+            if (keys['s']) {
+                snackDown();
+            }
+            if (keys['a']) {
+                snackLeft();
+            }
+            if (keys['d']) {
+                snackRight();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="pixiDiv"></div>
+</body>
+</html>
