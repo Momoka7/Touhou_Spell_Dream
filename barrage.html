@@ -56,33 +56,23 @@
                     b.beginFill(0x664561);//绘制的颜色
                     b.drawCircle(0, 0, 10);
                     b.endFill();//用i*指定绘制的颜色填充
-                    //b.setTransform(100,300);
                     barrage.push(b);
                     testContainers[j].addChild(b);
                 }
             }
-            /*timeline.to(barrage, {
-                //repeat:-1,
-                duration: 2, 
-                //yoyo:true,
-                //delay:1,
-                ease: "none",
-                y:200
-                }).to(barrage, {
-                    //repeat:-1,
-                    duration: 1, 
-                    ease: "none",
-                    y:400
-                    })*/
             gsap.to(barrage, {
                 repeat:-1,
                 delay:1,
-                stagger:0.2,
+                stagger:{
+                    each:0.1,
+                    grid:[5,10],
+                    axis:"x",
+                    /*from:"start"*/
+                },
                 duration: (index)=>{
-                    return -(index%num)*0.2+3
+                    return (index%num)*0.2+3
                 }, 
                 ease: "none",
-                //y:600,
                 pixi:{
                     angle:20,
                     pivotY:-600,
