@@ -7,28 +7,12 @@
     <title>Document</title>
     <script src='JS/pixi.min.js'></script>
     <script src="tools/InitConfig.js"></script>
-    <script src='application/main.js'></script>
-    <script>
-        class Star{
-            constructor(uname){
-                this.name=uname;
-            }
-
-            sum(){
-                console.log(this.name);
-            }
-        }
-        class LittleStar extends Star{
-            constructor(uname){
-                //由于父类方法中调用了this关键字，子类调用父类方法时会造成this指向不一致而报错，需要通过super来调用父类构造器以初始化父类
-                super(uname);
-                this.name=uname;
-            }
-        }
-
-        let s = new LittleStar('6656');
-        s.sum();
-    </script>
+    <script type="module" src='application/main.js'></script>
+    <!-- <script type="module">
+        import * as m1 from "./Javascript_resource/fileparser/jsonparser/shooting_anim_parser.js"
+        
+        m1.parse(123)
+    </script> -->
 </head>
 
 <body>

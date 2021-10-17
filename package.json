@@ -1,0 +1,16 @@
+{
+  "name": "touhou_spell_dream",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/monstara/Touhou_Spell_Dream.git"
+  },
+  "type": "module",
+  "author": "wo",
+  "license": "ISC"
+}
