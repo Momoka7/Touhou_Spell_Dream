@@ -4,7 +4,6 @@ import {gsap} from "../../../src/index.js";
 // import * as shooting from "../../../asserts/shootings/one_shoot.js"
 
 
-var loadQueue = []
 var loader = PIXI.Loader.shared
 /**
  * 输入解析的弹幕文件路径以及加载完毕后的回调函数
@@ -18,7 +17,6 @@ export function parse(name, func){
         if(request.status == 200){
             let json = JSON.parse(request.responseText)
             parseImgRes(json["extra_info"]["assert_path"], json, func)
-
         }
     }
 }

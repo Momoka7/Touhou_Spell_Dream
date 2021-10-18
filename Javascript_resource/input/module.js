@@ -11,6 +11,7 @@ function keyDown(e) {
 
 function keyUp(e) {
     keysMap[e.key] = false
+    keysCB["Release"](e.key)
 }
 
 function getKeysCB(){

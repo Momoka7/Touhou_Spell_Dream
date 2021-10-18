@@ -10,6 +10,7 @@ keysCB["w"] = functions.moveUp
 keysCB["a"] = functions.moveLeft
 keysCB["s"] = functions.moveDown
 keysCB["d"] = functions.moveRight
+keysCB["Release"] = functions.releaseKey
 
 /**
  * 

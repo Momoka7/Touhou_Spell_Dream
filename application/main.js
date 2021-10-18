@@ -1,4 +1,5 @@
-import * as m1 from "../Javascript_resource/fileparser/jsonparser/shooting_anim_parser.js"
+// import * as m1 from "../Javascript_resource/fileparser/jsonparser/shooting_anim_parser.js"
+import * as m1 from "../Javascript_resource/fileparser/jsonparser/player_anim_parser.js"
 import {gsap} from "../src/index.js";
 import PixiPlugin from "../src/PixiPlugin.js"
 import {keyUp,keyDown,bindCtrlObj, redefineKeysCB} from "../Javascript_resource/input/module.js"
