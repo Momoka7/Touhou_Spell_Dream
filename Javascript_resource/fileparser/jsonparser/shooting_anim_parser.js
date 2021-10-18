@@ -2,20 +2,23 @@ import * as PIXI from "../../../JS/pixi.js"
 import * as app from "../../../application/main.js"
 import {gsap} from "../../../src/index.js";
 // import * as shooting from "../../../asserts/shootings/one_shoot.js"
+
+
+var loadQueue = []
+var loader = PIXI.Loader.shared
 /**
  * 输入解析的弹幕文件路径以及加载完毕后的回调函数
  */
 export function parse(name, func){
-    let url = "../../../asserts/shootings/one_shoot.json"
+    let url = "../../../asserts/shootings/one_shoot.json"   //暂时硬编码，待更改
     let request = new XMLHttpRequest()
     request.open("get", url)
     request.send(null)
     request.onload = function () {
         if(request.status == 200){
             let json = JSON.parse(request.responseText)
-            let spriteObj = getImgRes(json["extra_info"]["assert_path"])
-            applyAnim(spriteObj, json)
-            applyRes(spriteObj, func)
+            parseImgRes(json["extra_info"]["assert_path"], json, func)
+
         }
     }
 }
@@ -49,7 +52,21 @@ function applyRes(spriteObj, func){
     func(spriteObj)
 }
 
-function getImgRes(imgPath) {
-    console.log(imgPath)
-    return new PIXI.Sprite.from("../../../asserts/images/"+imgPath)
+function parseImgRes(imgPath, json, func) {
+    loader.add(json["extra_info"]["alias"], "../../../asserts/images/"+imgPath).load(function(loader, resources){
+        onResLoaded(loader, resources, json, func)
+    });
+}
+
+function onResLoaded(loader, resources, json, func){
+    resources[json["extra_info"]["alias"]]
+    let sheet = new PIXI.BaseTexture.from(resources[json["extra_info"]["alias"]].url);
+    let x = json["extra_info"]["rectangle"]["x"]
+    let y = json["extra_info"]["rectangle"]["y"]
+    let width = json["extra_info"]["rectangle"]["width"]
+    let height = json["extra_info"]["rectangle"]["height"]
+    let spriteTexture = new PIXI.Texture(sheet, new PIXI.Rectangle(x, y, width, height))
+    let spriteObj = new PIXI.Sprite(spriteTexture)
+    applyAnim(spriteObj, json)
+    applyRes(spriteObj, func)
 }

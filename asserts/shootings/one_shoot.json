@@ -36,6 +36,13 @@
 
     },
     "extra_info":{
-        "assert_path":"1.png"
+        "assert_path":"spell_imgs/all_spell.png",
+        "rectangle":{
+            "x":10,
+            "y":17,
+            "width":16,
+            "height":14
+        },
+        "alias":"test_spell"
     }    
 }
