@@ -4,12 +4,12 @@ import {gsap} from "../../../src/index.js";
 // import * as shooting from "../../../asserts/shootings/one_shoot.js"
 
 
-var loader = PIXI.Loader.shared
+var loader
 /**
  * 输入解析的弹幕文件路径以及加载完毕后的回调函数
  */
 export function parse(name, func){
-    let url = "../../../asserts/shootings/one_shoot.json"   //暂时硬编码，待更改
+    let url = "../../../asserts/shootings/"+name+".json"   //暂时硬编码，待更改
     let request = new XMLHttpRequest()
     request.open("get", url)
     request.send(null)
@@ -51,13 +51,15 @@ function applyRes(spriteObj, func){
 }
 
 function parseImgRes(imgPath, json, func) {
+    loader = new PIXI.Loader()
     loader.add(json["extra_info"]["alias"], "../../../asserts/images/"+imgPath).load(function(loader, resources){
         onResLoaded(loader, resources, json, func)
     });
 }
 
 function onResLoaded(loader, resources, json, func){
-    resources[json["extra_info"]["alias"]]
+    loader.destroy()
+    loader = null
     let sheet = new PIXI.BaseTexture.from(resources[json["extra_info"]["alias"]].url);
     let x = json["extra_info"]["rectangle"]["x"]
     let y = json["extra_info"]["rectangle"]["y"]

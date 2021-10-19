@@ -1,33 +1,32 @@
 // import * as m1 from "../Javascript_resource/fileparser/jsonparser/shooting_anim_parser.js"
-import * as m1 from "../Javascript_resource/fileparser/jsonparser/player_anim_parser.js"
+import * as m1 from "../Javascript_resource/gamelayer/module.js"
+import {loopingDetect} from "../Javascript_resource/collusion/collusiontest.js"
 import {gsap} from "../src/index.js";
 import PixiPlugin from "../src/PixiPlugin.js"
-import {keyUp,keyDown,bindCtrlObj, redefineKeysCB} from "../Javascript_resource/input/module.js"
-/**
- * 游戏主要脚本处理
- * 流程:    1.创建PIXI实例app
- *          2.创建若干个容器Container
- *          3.创建若干个Sprites
- *          4.将Sprites分组加入容器
- *          5.读取配置文件
- *          6.添加键盘处理逻辑
- *          7.添加Sprites动画效果
- *          
- */
+import {keyUp,keyDown,updateKeys} from "../Javascript_resource/input/module.js"
+
 var app;
 var player;
 window.onload = function(){
     app = initAndGetPixiApp(800,600,0x000000,"#pixiDiv");//初始化并获取app实例
     gsap.registerPlugin(PixiPlugin);
-    m1.parse(123,onParsed)
+    m1.bindPlayerLayerTo(app.stage)
+    m1.bindSpellLayerTo(app.stage)
     document.addEventListener("keydown", keyDown)
     document.addEventListener("keyup", keyUp)
-    
+    app.ticker.add(updateKeys)
+    test()
 }
 
-function onParsed(spriteObj) {
-    bindCtrlObj(spriteObj)
-    return spriteObj
+function test() {
+    let container1 = new PIXI.Container()
+    let container2 = m1.getPlayerContainer()
+    m1.bindLayerToSpellLayer(container1)
+    m1.createSpellOn("one_shoot",null,container1)
+    m1.createPlayerCharacter("reimu")
+    app.ticker.add(function loop() {
+        loopingDetect(container1,container2)
+    })
 }
 
 export {app};

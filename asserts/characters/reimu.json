@@ -1,7 +1,7 @@
 {
     "init_state":{
         "start_point":{"x":300, "y":300},
-        "scale": 1,
+        "scale":{"x":2, "y":2},
         "anim_speed":0.3,
         "move_speed":{
             "normal":5,
@@ -38,10 +38,10 @@
             },
             "moveright":{
                 "init_pos":{
-                    "x":17,
+                    "x":113,
                     "y":114
                 },
-                "frame_num":8,
+                "frame_num":5,
                 "inter_frame_offset":{
                     "x":32,
                     "y":0
@@ -49,10 +49,10 @@
             },
             "moveleft":{
                 "init_pos":{
-                    "x":17,
+                    "x":115,
                     "y":66
                 },
-                "frame_num":8,
+                "frame_num":5,
                 "inter_frame_offset":{
                     "x":32,
                     "y":0

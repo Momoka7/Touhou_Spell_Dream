@@ -2,6 +2,9 @@ import {bindCtrlObj,redefineKeysCB,keysCB,keysMap} from "./funloader.js"
 
 function keyDown(e) {
     keysMap[e.key] = true
+}
+
+function updateKeys() {
     for (let p in keysCB) {
         if (keysMap[p]) {
             keysCB[p]()
@@ -30,4 +33,4 @@ function getKeysMap(){
 /**
  * keyDown和keyUp暴露给input以外的模块使用，一般是作为键盘监听事件函数的参数传入
  */
-export {getKeysCB, getKeysMap, keyDown, keyUp, bindCtrlObj, redefineKeysCB}
+export {getKeysCB, getKeysMap, keyDown, keyUp, bindCtrlObj, redefineKeysCB, updateKeys}

@@ -1,10 +1,9 @@
 import * as PIXI from "../../../JS/pixi.js"
-import * as app from "../../../application/main.js"
 
-var loader = PIXI.Loader.shared
+var loader
 
 export function parse(name, func){
-    let url = "../../../asserts/characters/reimu.json"   //暂时硬编码，待更改
+    let url = "../../../asserts/characters/"+name+".json"   //暂时硬编码，待更改
     let request = new XMLHttpRequest()
     request.open("get", url)
     request.send(null)
@@ -17,6 +16,7 @@ export function parse(name, func){
 }
 
 function parseImgRes(imgPath, json, func) {
+    loader = new PIXI.Loader()
     loader.add(json["extra_info"]["alias"], "../../../asserts/images/"+imgPath).load(function(loader, resources){
         onResLoaded(loader, resources, json, func)
     });
@@ -28,14 +28,21 @@ function parseImgRes(imgPath, json, func) {
  * @param {加载完成后的回调函数}} func 
  */
 function applyRes(animSpriteInfo, func){
-    app.app.stage.addChild(animSpriteInfo["spriteObj"])
-    animSpriteInfo["spriteObj"].gotoAndPlay(1);
-    animSpriteInfo["moveState"] = []
     func(animSpriteInfo)
 }
 
+function initState(obj,json) {
+    obj.x = json["init_state"]["start_point"]["x"]
+    obj.y = json["init_state"]["start_point"]["y"]
+    obj.moveSpeed = json["init_state"]["move_speed"]
+    obj.scale.x = json["init_state"]["scale"]["x"]
+    obj.scale.y = json["init_state"]["scale"]["y"]
+    obj.gotoAndPlay(1);
+}
+
 function onResLoaded(loader, resources, json, func){
-    resources[json["extra_info"]["alias"]]
+    loader.destroy()
+    loader = null
     let sheet = new PIXI.BaseTexture.from(resources[json["extra_info"]["alias"]].url)
     let animSpriteInfo = {}
     let width = json["movement_frames"]["common_info"]["width"]
@@ -53,6 +60,7 @@ function onResLoaded(loader, resources, json, func){
     }
     animSpriteInfo["spriteObj"] = new PIXI.AnimatedSprite(animSpriteInfo["moveup"])
     animSpriteInfo["spriteObj"].animationSpeed = json["init_state"]["anim_speed"]
-    animSpriteInfo["spriteObj"].moveSpeed = json["init_state"]["move_speed"]
+    animSpriteInfo["moveState"] = []
+    initState(animSpriteInfo["spriteObj"], json)
     applyRes(animSpriteInfo, func)
 }
