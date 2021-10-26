@@ -60,6 +60,7 @@ function onResLoaded(loader, resources, json, func){
     }
     animSpriteInfo["spriteObj"] = new PIXI.AnimatedSprite(animSpriteInfo["moveup"])
     animSpriteInfo["spriteObj"].animationSpeed = json["init_state"]["anim_speed"]
+    animSpriteInfo["spriteObj"].alias = json["extra_info"]["alias"]
     animSpriteInfo["moveState"] = []
     initState(animSpriteInfo["spriteObj"], json)
     applyRes(animSpriteInfo, func)

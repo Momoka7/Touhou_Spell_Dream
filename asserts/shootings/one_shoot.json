@@ -1,26 +1,32 @@
 {
     "init_state":{
         "start_point":{"x":300, "y":300},
-        "angle": 30,
+        "anchor":{
+            "x":0.5,
+            "y":0.5
+        },
+        "angle": 0,
         "scale": 1,
-        "shoot_num": 1,
+        "shoot_num": 10,
         "inter_offset_info":{
             "inter_angle": 0,
-            "inter_speed": 0,
-            "inter_scale": 0
+            "inter_time": 0,
+            "inter_scale": 0,
+            "interval": 1
+        },
+        "style":{
+            "type":"all_circle",
+            "radius":60,
+            "center_pos":{
+                "x":200,
+                "y":200
+            }
         }
     },
     "transform_info":{
-        "angle": 60,
-        "speed": 10,
-        "scale": 2,
-        "end_point": {"x":200, "y":200},
-        "shoot_num": 1,
-        "inter_shoot_ctrl":{
-            "inter_angle": 0,
-            "inter_speed": 0,
-            "inter_scale": 0
-        },
+        "angle": 0,
+        "scale": 1,
+        "end_point": {"x":0, "y":0},
         "anim_ctrl":{
             "duration": 1,
             "delay": 1,
@@ -39,7 +45,7 @@
         "assert_path":"spell_imgs/all_spell.png",
         "rectangle":{
             "x":10,
-            "y":17,
+            "y":81,
             "width":16,
             "height":14
         },

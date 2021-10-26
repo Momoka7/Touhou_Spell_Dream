@@ -15,4 +15,6 @@ function getPlayerByName(name) {
     return playerMgr[name]
 }
 
+export {createPlayer,getPlayerByName}
+
 

@@ -1,5 +1,6 @@
 import * as PIXI from "../../../JS/pixi.js"
 import * as app from "../../../application/main.js"
+import {functionMap} from "../../spell/style.js"
 import {gsap} from "../../../src/index.js";
 // import * as shooting from "../../../asserts/shootings/one_shoot.js"
 
@@ -21,23 +22,27 @@ export function parse(name, func){
     }
 }
 
-function applyAnim(spriteObj, json){
+function applyAnim(spriteObj, json, idx){
+    spriteObj.anchor.set(json["init_state"]["anchor"]["x"],json["init_state"]["anchor"]["y"])
     gsap.to(spriteObj,{
         startAt:{
             x:json["init_state"]["start_point"]["x"],
             y:json["init_state"]["start_point"]["y"],
             pixi:{
-                rotation: json["init_state"]["angle"],
-                scale: json["init_state"]["scale"]
+                rotation: json["init_state"]["angle"]+ idx * json["init_state"]["inter_offset_info"]["inter_angle"],
+                scale: json["init_state"]["scale"] + idx * json["init_state"]["inter_offset_info"]["inter_scale"]
             },
         },
-        x:json["transform_info"]["end_point"]["x"],
-        y:json["transform_info"]["end_point"]["y"],
+        // x:json["transform_info"]["end_point"]["x"],
+        // y:json["transform_info"]["end_point"]["y"],
+        x:spriteObj.transformX,
+        y:spriteObj.transformY,
         pixi:{
-            rotation: json["transform_info"]["angle"],
-            scale: json["transform_info"]["scale"]
+            rotation: json["transform_info"]["angle"]+ idx * json["init_state"]["inter_offset_info"]["inter_angle"],
+            scale: json["transform_info"]["scale"]+ idx * json["init_state"]["inter_offset_info"]["inter_scale"]
         },
         duration:json["transform_info"]["anim_ctrl"]["duration"],
+        delay:idx * json["init_state"]["inter_offset_info"]["inter_time"]
     })
 }
 /**
@@ -66,7 +71,12 @@ function onResLoaded(loader, resources, json, func){
     let width = json["extra_info"]["rectangle"]["width"]
     let height = json["extra_info"]["rectangle"]["height"]
     let spriteTexture = new PIXI.Texture(sheet, new PIXI.Rectangle(x, y, width, height))
-    let spriteObj = new PIXI.Sprite(spriteTexture)
-    applyAnim(spriteObj, json)
-    applyRes(spriteObj, func)
+    let spriteObjs = []
+    for(let i = 0;i<json["init_state"]["shoot_num"];i++){
+        spriteObjs[i] = new PIXI.Sprite(spriteTexture)
+        console.log(spriteObjs[i])
+        functionMap[json["init_state"]["style"]["type"]](spriteObjs[i],json,i)
+        applyAnim(spriteObjs[i], json, i)
+        applyRes(spriteObjs[i], func)
+    }
 }

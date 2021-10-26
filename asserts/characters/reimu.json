@@ -2,7 +2,7 @@
     "init_state":{
         "start_point":{"x":300, "y":300},
         "scale":{"x":2, "y":2},
-        "anim_speed":0.3,
+        "anim_speed":0.2,
         "move_speed":{
             "normal":5,
             "slow":2

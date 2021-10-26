@@ -4,11 +4,11 @@ import {loopingDetect} from "../Javascript_resource/collusion/collusiontest.js"
 import {gsap} from "../src/index.js";
 import PixiPlugin from "../src/PixiPlugin.js"
 import {keyUp,keyDown,updateKeys} from "../Javascript_resource/input/module.js"
-
+import * as ctrlspell from "../Javascript_resource/spell/ctrlspell.js"
+import * as ctrlplayer from "../Javascript_resource/player/ctrlplayer.js"
 var app;
-var player;
 window.onload = function(){
-    app = initAndGetPixiApp(800,600,0x000000,"#pixiDiv");//初始化并获取app实例
+    app = initAndGetPixiApp(800,600,0x00ff00,"#pixiDiv");//初始化并获取app实例
     gsap.registerPlugin(PixiPlugin);
     m1.bindPlayerLayerTo(app.stage)
     m1.bindSpellLayerTo(app.stage)
@@ -19,13 +19,10 @@ window.onload = function(){
 }
 
 function test() {
-    let container1 = new PIXI.Container()
-    let container2 = m1.getPlayerContainer()
-    m1.bindLayerToSpellLayer(container1)
-    m1.createSpellOn("one_shoot",null,container1)
-    m1.createPlayerCharacter("reimu")
+    ctrlplayer.createPlayer("reimu")
+    ctrlspell.createSpellStringBy("one_shoot","one_shoot")
     app.ticker.add(function loop() {
-        loopingDetect(container1,container2)
+        loopingDetect(m1.getPlayerContainer(),ctrlspell.getSpellContainerBySpriteID("one_shoot"))
     })
 }
 

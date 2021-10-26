@@ -11,6 +11,7 @@ var playerContainer = new PIXI.Container()
  */
 function createPlayerCharacter(sJsonName, dctExtraInfo, onParsedCB) {
     PLAYER_PARSER.parse(sJsonName,function parseFin(animSpriteInfo) {
+        console.log(animSpriteInfo)
         if(typeof onParsedCB == 'function')onParsedCB(animSpriteInfo)
         onParsed(animSpriteInfo)
     })

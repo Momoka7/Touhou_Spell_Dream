@@ -43,10 +43,14 @@ function handleEgdeCollisions(container1, container2,rect) {
     let bound2 = container2.getBounds()
     let imgData1Data = app.renderer.plugins.extract.canvas(container1).getContext('2d').getImageData(rect.left - bound1.x, rect.top - bound1.y, Math.ceil(rect.width), Math.ceil(rect.height))
     let imgData2Data = app.renderer.plugins.extract.canvas(container2).getContext('2d').getImageData(rect.left - bound2.x, rect.top - bound2.y, Math.ceil(rect.width), Math.ceil(rect.height))
+    let counter = 100 //判断阈值，提高此值以提高容错率
     for (let i = 3; i < imgData1Data.data.length; i += 4) {
         if (imgData1Data.data[i] > 0 && imgData2Data.data[i] > 0) {
-            console.log('撞了')
-            return true
+            counter--;
+            if(counter < 0){
+                console.log('撞了')
+                return true
+            }
         }
     }
     return false
